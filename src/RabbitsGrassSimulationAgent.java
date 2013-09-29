@@ -24,7 +24,7 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 
 	private RabbitsGrassSimulationSpace rgsSpace;
 	
-	private static final int GRASS_ENERGY  = 2;
+	private static final int GRASS_ENERGY  = 20;
 
 	public RabbitsGrassSimulationAgent(int initialEnergy) {
 		x = -1;
