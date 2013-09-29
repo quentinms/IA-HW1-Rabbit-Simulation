@@ -9,15 +9,15 @@ import uchicago.src.sim.space.Object2DGrid;
 /**
  * Class that implements the simulation agent for the rabbits grass simulation.
  * 
- * @author
+ *  ( Y)
+ *  ( . .)
+ *  o(")(")
  */
 
 public class RabbitsGrassSimulationAgent implements Drawable {
 
 	private int x;
 	private int y;
-	private int vX;
-	private int vY;
 	private int energy;
 	private static int IDNumber = 0;
 	private int ID;
@@ -35,26 +35,8 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 		ID = IDNumber;
 	}
 
-	private void setDirection() {
-		vX = 0;
-		vY = 0;
-		int direction = (int) (Math.random() * 4);
-		
-		switch (direction) {
-		case 0: vX = 1; vY = 0; break;
-		case 1: vX = 0; vY = 1; break;
-		case 2: vX = -1; vY = 0; break;
-		case 3: vX = 0; vY = -1; break;
-
-		default:
-			break;
-		}
-		
-	}
-
 	public void draw(SimGraphics G) {
 
-		
 		G.drawFastCircle(Color.PINK);
 
 	}
@@ -96,21 +78,43 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 
 	public void step() {
 		
+			int direction = (int) (Math.random() * 4);
 		
-		//TODO direction
-		setDirection();
-		int newX = x + vX;
-		int newY = y + vY;
-
-		Object2DGrid grid = rgsSpace.getCurrentAgentSpace();
-		newX = (newX + grid.getSizeX()) % grid.getSizeX();
-		newY = (newY + grid.getSizeY()) % grid.getSizeY();
-
-		if (tryMove(newX, newY)) {
-			energy = energy + (rgsSpace.eatGrassAt(x, y)*GRASS_ENERGY);
-		} 
+			int vX = 0;
+			int vY = 0;
+			
+			int newX = x;
+			int newY = y;
+			
+			Object2DGrid grid = rgsSpace.getCurrentAgentSpace();
+			
+			int count_move_tries = 0;
+			
+			do{
+			direction = (direction + 1) % 4;
+			switch (direction) {
+				case 0: vX = 1; vY = 0; break;
+				case 1: vX = 0; vY = 1; break;
+				case 2: vX = -1; vY = 0; break;
+				case 3: vX = 0; vY = -1; break;
+			}
+			
+			newX = (x + vX + grid.getSizeX()) % grid.getSizeX();
+			newY = (y + vY + grid.getSizeY()) % grid.getSizeY();
+			 
+			count_move_tries++;
+			
+			if(count_move_tries == 4){
+				System.out.println("Rabbit "+getID()+" is blocked in "+x+","+y+"");
+			}
+			
+			}while(!tryMove(newX, newY) && count_move_tries < 4);
+	
 		
+		//Eating
+		energy = energy + (rgsSpace.eatGrassAt(x, y)*GRASS_ENERGY);
 		
+	
 		energy = energy - 1;
 	}
 	

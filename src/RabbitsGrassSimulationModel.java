@@ -109,6 +109,8 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 				// ignore this exception
 				} 
 				
+				System.out.println("*********************************************************");
+				
 				rgsSpace.spreadGrass(grassGrowthRate);
 				
 				
@@ -118,18 +120,25 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 							.get(i);
 					rgsa.step();
 					
+					rgsa.report();
+				}
+				
+				
+				/* Check Repro*/
+				
+				for (int i = 0; i < agentList.size(); i++) {
+					RabbitsGrassSimulationAgent rgsa = (RabbitsGrassSimulationAgent) agentList
+							.get(i);
 					
 					if (rgsa.getEnergy() > birthThreshold) {
 						rgsa.setEnergy(rgsa.getEnergy() - birthThreshold);
 						addNewAgent();
-						//System.out.println("Repoduction of agent #"+(i+1));
+						System.out.println("Reproduction of agent #"+(rgsa.getID())+". It now has "+rgsa.getEnergy());
 					}
 					
-					rgsa.report();
 				}
 
-				// Remove dead agents
-				
+				// Remove dead rabbits :'(
 				
 				for (int i = (agentList.size() - 1); i >= 0; i--) {
 					RabbitsGrassSimulationAgent rgsa = (RabbitsGrassSimulationAgent) agentList
@@ -211,7 +220,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		RabbitsGrassSimulationAgent a = new RabbitsGrassSimulationAgent(birthThreshold);
 		agentList.add(a);
 		rgsSpace.addAgent(a);
-		System.out.println("A new agent with "+a.getEnergy()+"is born!");
+		System.out.println("A new agent with "+a.getEnergy()+" energy is born!");
 		a.report();
 	}
 
