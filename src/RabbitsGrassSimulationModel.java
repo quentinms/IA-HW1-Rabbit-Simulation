@@ -1,7 +1,14 @@
 import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
+import javax.activation.DataSource;
+
 import uchicago.src.reflector.RangePropertyDescriptor;
+import uchicago.src.sim.analysis.OpenSequenceGraph;
+import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.BasicAction;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
@@ -27,6 +34,8 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	private RabbitsGrassSimulationSpace rgsSpace;
 
 	private DisplaySurface displaySurf;
+	
+	private OpenSequenceGraph amountOfGrassInSpace;
 
 	private ArrayList agentList;
 
@@ -44,6 +53,41 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	private int worldYSize = WORLDYSIZE;
 	private int grassGrowthRate = GRASSGROWTRATE;
 	private int birthThreshold = BIRTH_TRESHOLD;
+	
+	class grassInSpace implements DataSource, Sequence {
+		
+		public Object execute() {
+			return new Double(getSValue());
+		}
+		
+		public double getSValue() {
+			return (double) rgsSpace.getTotalGrass();
+		}
+
+		@Override
+		public String getContentType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public InputStream getInputStream() throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getName() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public OutputStream getOutputStream() throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
 
 	public static void main(String[] args) {
 
@@ -61,14 +105,24 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		schedule = new Schedule(1);
 
+		// Tear dow displays
 		if (displaySurf != null) {
 			displaySurf.dispose();
 		}
 		displaySurf = null;
+		
+		if (amountOfGrassInSpace != null) {
+			amountOfGrassInSpace.dispose();
+		}
+		amountOfGrassInSpace = null;
 
+		// Create displays
 		displaySurf = new DisplaySurface(this, "Carry Drop Model Window 1");
-
+		amountOfGrassInSpace = new OpenSequenceGraph("Amount of grass in space", this);
+		
+		// Register displays
 		registerDisplaySurface("Carry Drop Model Window 1", displaySurf);
+		this.registerMediaProducer("Plot", amountOfGrassInSpace);
 
 	}
 
@@ -78,7 +132,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		buildDisplay();
 
 		displaySurf.display();
-
+		amountOfGrassInSpace.display();
 	}
 
 	public void buildModel() {
@@ -110,8 +164,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 					// ignore this exception
 				}
 
-				System.out
-						.println("*********************************************************");
+				System.out.println("*********************************************************");
 
 				rgsSpace.spreadGrass(grassGrowthRate);
 
@@ -168,6 +221,14 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		}
 
 		schedule.scheduleActionAtInterval(10, new CarryDropCountLiving());
+		
+		class RabbitsGrassSimulationUpdateGrassInSpace extends BasicAction {
+			public void execute() {
+				amountOfGrassInSpace.step();
+			}
+		}
+		
+		schedule.scheduleActionAt(10, new RabbitsGrassSimulationUpdateGrassInSpace());
 	}
 
 	public void buildDisplay() {
@@ -190,6 +251,8 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		displaySurf.addDisplayableProbeable(displayGrass, "Grass");
 		displaySurf.addDisplayableProbeable(displayRabbits, "Rabbits");
+		
+		amountOfGrassInSpace.addSequence("Grass in space", new grassInSpace());
 	}
 
 	public String[] getInitParam() {
