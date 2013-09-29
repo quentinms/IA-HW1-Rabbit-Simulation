@@ -30,7 +30,6 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 		x = -1;
 		y = -1;
 		energy = initialEnergy;
-		//setVxVy();
 		IDNumber++;
 		ID = IDNumber;
 	}

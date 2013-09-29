@@ -101,7 +101,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	public void buildSchedule() {
 		System.out.println("Running BuildSchedule");
 
-		class CarryDropStep extends BasicAction {
+		class RabbitsGrassSimulationStep extends BasicAction {
 			public void execute() {
 				
 				try {Thread.sleep(500); // sleep a tenth of a second
@@ -154,7 +154,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			}
 		}
 
-		schedule.scheduleActionBeginning(0, new CarryDropStep());
+		schedule.scheduleActionBeginning(0, new RabbitsGrassSimulationStep());
 
 		class CarryDropCountLiving extends BasicAction {
 			public void execute() {
