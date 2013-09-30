@@ -121,5 +121,16 @@ public class RabbitsGrassSimulationSpace {
 		}
 		return totalGrass;
 	}
+	
+	public int getTotalAgents() {
+		int totalAgents = 0;
+		for (int i = 0; i < agentSpace.getSizeX(); i++) {
+			for (int j = 0; j < agentSpace.getSizeY(); j++) {
+				if(getAgentAt(i, j) != null)
+					totalAgents++;
+			}
+		}
+		return totalAgents;
+	}
 
 }

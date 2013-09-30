@@ -36,6 +36,8 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	private DisplaySurface displaySurf;
 	
 	private OpenSequenceGraph amountOfGrassInSpace;
+	
+	private OpenSequenceGraph amountOfAgentsInSpace;
 
 	private ArrayList agentList;
 
@@ -88,6 +90,43 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			return null;
 		}
 	}
+	
+	class agentsInSpace implements DataSource, Sequence {
+		
+		public Object execute() {
+			return new Double(getSValue());
+		}
+
+		@Override
+		public double getSValue() {
+			return (double) rgsSpace.getTotalAgents();
+		}
+
+		@Override
+		public String getContentType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public InputStream getInputStream() throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getName() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public OutputStream getOutputStream() throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
 
 	public static void main(String[] args) {
 
@@ -99,7 +138,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	}
 
 	public void setup() {
-		System.out.println("Running setup");
+//		System.out.println("Running setup");
 		rgsSpace = null;
 		agentList = new ArrayList();
 
@@ -115,14 +154,21 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			amountOfGrassInSpace.dispose();
 		}
 		amountOfGrassInSpace = null;
+		
+		if (amountOfAgentsInSpace != null) {
+			amountOfAgentsInSpace.dispose();
+		}
+		amountOfAgentsInSpace = null;
 
 		// Create displays
 		displaySurf = new DisplaySurface(this, "Carry Drop Model Window 1");
 		amountOfGrassInSpace = new OpenSequenceGraph("Amount of grass in space", this);
+		amountOfAgentsInSpace = new OpenSequenceGraph("Amount of rabbits in space", this);
 		
 		// Register displays
 		registerDisplaySurface("Carry Drop Model Window 1", displaySurf);
-		this.registerMediaProducer("Plot", amountOfGrassInSpace);
+		this.registerMediaProducer("PlotGrass", amountOfGrassInSpace);
+		this.registerMediaProducer("PlotAgents", amountOfAgentsInSpace);
 
 	}
 
@@ -133,6 +179,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		displaySurf.display();
 		amountOfGrassInSpace.display();
+		amountOfAgentsInSpace.display();
 	}
 
 	public void buildModel() {
@@ -229,6 +276,14 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		}
 		
 		schedule.scheduleActionAt(10, new RabbitsGrassSimulationUpdateGrassInSpace());
+		
+		class RabbitsGrassSimulationUpdateAgentsInSpace extends BasicAction {
+			public void execute() {
+				amountOfAgentsInSpace.step();
+			}
+		}
+		
+		schedule.scheduleActionAt(10, new RabbitsGrassSimulationUpdateAgentsInSpace());
 	}
 
 	public void buildDisplay() {
@@ -253,6 +308,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		displaySurf.addDisplayableProbeable(displayRabbits, "Rabbits");
 		
 		amountOfGrassInSpace.addSequence("Grass in space", new grassInSpace());
+		amountOfAgentsInSpace.addSequence("Agents in space", new agentsInSpace());
 	}
 
 	public String[] getInitParam() {
