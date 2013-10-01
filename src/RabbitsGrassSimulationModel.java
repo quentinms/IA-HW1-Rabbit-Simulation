@@ -204,11 +204,11 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		class RabbitsGrassSimulationStep extends BasicAction {
 			public void execute() {
 
-				try {
+				/*try {
 					Thread.sleep(500); // sleep a tenth of a second
 				} catch (Exception ex) {
 					// ignore this exception
-				}
+				}*/
 
 				System.out
 						.println("*********************************************************");
@@ -274,7 +274,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			}
 		}
 
-		schedule.scheduleActionAt(10,
+		schedule.scheduleActionAtInterval(10,
 				new RabbitsGrassSimulationUpdateGrassInSpace());
 
 		class RabbitsGrassSimulationUpdateAgentsInSpace extends BasicAction {
@@ -283,7 +283,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			}
 		}
 
-		schedule.scheduleActionAt(10,
+		schedule.scheduleActionAtInterval(10,
 				new RabbitsGrassSimulationUpdateAgentsInSpace());
 	}
 
