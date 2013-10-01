@@ -21,17 +21,19 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 	private int energy;
 	private static int IDNumber = 0;
 	private int ID;
+	
+	private int grassEnergy; //represents how efficient the rabbit is at digesting grass.
 
 	private RabbitsGrassSimulationSpace rgsSpace;
 	
-	private static final int GRASS_ENERGY  = 20;
 
-	public RabbitsGrassSimulationAgent(int initialEnergy) {
+	public RabbitsGrassSimulationAgent(int initialEnergy, int grassEnergy) {
 		x = -1;
 		y = -1;
 		energy = initialEnergy;
 		IDNumber++;
 		ID = IDNumber;
+		this.grassEnergy = grassEnergy;
 	}
 
 	public void draw(SimGraphics G) {
@@ -111,7 +113,7 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 	
 		
 		//Eating
-		energy = energy + (rgsSpace.eatGrassAt(x, y)*GRASS_ENERGY);
+		energy = energy + (rgsSpace.eatGrassAt(x, y) * grassEnergy);
 		
 	
 		energy = energy - 1;

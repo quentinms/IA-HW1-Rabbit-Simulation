@@ -34,9 +34,9 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	private RabbitsGrassSimulationSpace rgsSpace;
 
 	private DisplaySurface displaySurf;
-	
+
 	private OpenSequenceGraph amountOfGrassInSpace;
-	
+
 	private OpenSequenceGraph amountOfAgentsInSpace;
 
 	private ArrayList agentList;
@@ -46,22 +46,23 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	private static final int WORLDXSIZE = 10;
 	private static final int WORLDYSIZE = 10;
 	private static final int GRASSGROWTRATE = 10;
-	private static final int GRASSENERGY = 1;
-	// private static final int INITIAL_ENERGY = 100;
-	private static final int BIRTH_TRESHOLD = 25;
+	private static final int GRASS_ENERGY = 1;
+	private static final int INITIAL_ENERGY = 10;
+	private static final int BIRTH_TRESHOLD = 15;
 
 	private int numAgents = NUMAGENTS;
 	private int worldXSize = WORLDXSIZE;
 	private int worldYSize = WORLDYSIZE;
 	private int grassGrowthRate = GRASSGROWTRATE;
 	private int birthThreshold = BIRTH_TRESHOLD;
-	
+	private int grassEnergy = GRASS_ENERGY;
+
 	class grassInSpace implements DataSource, Sequence {
-		
+
 		public Object execute() {
 			return new Double(getSValue());
 		}
-		
+
 		public double getSValue() {
 			return (double) rgsSpace.getTotalGrass();
 		}
@@ -90,9 +91,9 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			return null;
 		}
 	}
-	
+
 	class agentsInSpace implements DataSource, Sequence {
-		
+
 		public Object execute() {
 			return new Double(getSValue());
 		}
@@ -125,7 +126,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -138,7 +139,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	}
 
 	public void setup() {
-//		System.out.println("Running setup");
+		// System.out.println("Running setup");
 		rgsSpace = null;
 		agentList = new ArrayList();
 
@@ -149,12 +150,12 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			displaySurf.dispose();
 		}
 		displaySurf = null;
-		
+
 		if (amountOfGrassInSpace != null) {
 			amountOfGrassInSpace.dispose();
 		}
 		amountOfGrassInSpace = null;
-		
+
 		if (amountOfAgentsInSpace != null) {
 			amountOfAgentsInSpace.dispose();
 		}
@@ -162,9 +163,11 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		// Create displays
 		displaySurf = new DisplaySurface(this, "Carry Drop Model Window 1");
-		amountOfGrassInSpace = new OpenSequenceGraph("Amount of grass in space", this);
-		amountOfAgentsInSpace = new OpenSequenceGraph("Amount of rabbits in space", this);
-		
+		amountOfGrassInSpace = new OpenSequenceGraph(
+				"Amount of grass in space", this);
+		amountOfAgentsInSpace = new OpenSequenceGraph(
+				"Amount of rabbits in space", this);
+
 		// Register displays
 		registerDisplaySurface("Carry Drop Model Window 1", displaySurf);
 		this.registerMediaProducer("PlotGrass", amountOfGrassInSpace);
@@ -211,7 +214,8 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 					// ignore this exception
 				}
 
-				System.out.println("*********************************************************");
+				System.out
+						.println("*********************************************************");
 
 				rgsSpace.spreadGrass(grassGrowthRate);
 
@@ -233,13 +237,12 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 					if (rgsa.getEnergy() > birthThreshold) {
 
 						boolean reproductionSuccessfull = addNewAgent();
-						if (reproductionSuccessfull) {
-							rgsa.setEnergy(rgsa.getEnergy() - birthThreshold);
-							System.out.println("Reproduction of agent #"
-									+ (rgsa.getID()) + ". It now has "
-									+ rgsa.getEnergy());
-						}
-						
+
+						rgsa.setEnergy(rgsa.getEnergy() - INITIAL_ENERGY);
+						System.out.println("Reproduction of agent #"
+								+ (rgsa.getID()) + ". It now has "
+								+ rgsa.getEnergy());
+
 					}
 
 				}
@@ -268,22 +271,24 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		}
 
 		schedule.scheduleActionAtInterval(10, new CarryDropCountLiving());
-		
+
 		class RabbitsGrassSimulationUpdateGrassInSpace extends BasicAction {
 			public void execute() {
 				amountOfGrassInSpace.step();
 			}
 		}
-		
-		schedule.scheduleActionAt(10, new RabbitsGrassSimulationUpdateGrassInSpace());
-		
+
+		schedule.scheduleActionAt(10,
+				new RabbitsGrassSimulationUpdateGrassInSpace());
+
 		class RabbitsGrassSimulationUpdateAgentsInSpace extends BasicAction {
 			public void execute() {
 				amountOfAgentsInSpace.step();
 			}
 		}
-		
-		schedule.scheduleActionAt(10, new RabbitsGrassSimulationUpdateAgentsInSpace());
+
+		schedule.scheduleActionAt(10,
+				new RabbitsGrassSimulationUpdateAgentsInSpace());
 	}
 
 	public void buildDisplay() {
@@ -306,9 +311,10 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		displaySurf.addDisplayableProbeable(displayGrass, "Grass");
 		displaySurf.addDisplayableProbeable(displayRabbits, "Rabbits");
-		
+
 		amountOfGrassInSpace.addSequence("Grass in space", new grassInSpace());
-		amountOfAgentsInSpace.addSequence("Agents in space", new agentsInSpace());
+		amountOfAgentsInSpace.addSequence("Agents in space",
+				new agentsInSpace());
 	}
 
 	public String[] getInitParam() {
@@ -334,8 +340,12 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 				"BirthThreshold", 0, 50, 10);
 		descriptors.put("BirthThreshold", pdBirthThreshold);
 
+		RangePropertyDescriptor pdGrassEnergy = new RangePropertyDescriptor(
+				"GrassEnergy", 0, 20, 5);
+		descriptors.put("GrassEnergy", pdGrassEnergy);
+
 		String[] initParams = { "NumAgents", "WorldXSize", "WorldYSize",
-				"GrassGrowthRate", "BirthThreshold" };
+				"GrassGrowthRate", "BirthThreshold", "GrassEnergy" };
 		return initParams;
 	}
 
@@ -347,7 +357,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		if (agentList.size() < worldXSize * worldYSize) {
 			RabbitsGrassSimulationAgent a = new RabbitsGrassSimulationAgent(
-					birthThreshold);
+					INITIAL_ENERGY, grassEnergy);
 			agentList.add(a);
 			rgsSpace.addAgent(a);
 			System.out.println("A new agent with " + a.getEnergy()
@@ -418,6 +428,14 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 	public void setGrassGrowthRate(int i) {
 		grassGrowthRate = i;
+	}
+
+	public int getGrassEnergy() {
+		return grassEnergy;
+	}
+
+	public void setGrassEnergy(int i) {
+		grassEnergy = i;
 	}
 
 	public int getBirthThreshold() {
