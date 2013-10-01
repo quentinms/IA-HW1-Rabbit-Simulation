@@ -64,30 +64,29 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		}
 
 		public double getSValue() {
+			System.out.println("Total grass in space = " + rgsSpace.getTotalGrass());
 			return (double) rgsSpace.getTotalGrass();
 		}
 
+		
+		/* Useless but required methods. */
 		@Override
 		public String getContentType() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public InputStream getInputStream() throws IOException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getName() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public OutputStream getOutputStream() throws IOException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}
@@ -103,27 +102,24 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 			return (double) rgsSpace.getTotalAgents();
 		}
 
+		/* Useless but required methods. */
 		@Override
 		public String getContentType() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public InputStream getInputStream() throws IOException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getName() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public OutputStream getOutputStream() throws IOException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -145,7 +141,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		schedule = new Schedule(1);
 
-		// Tear dow displays
+		// Tear down displays
 		if (displaySurf != null) {
 			displaySurf.dispose();
 		}
