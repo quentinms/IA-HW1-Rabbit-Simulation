@@ -309,8 +309,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		displaySurf.addDisplayableProbeable(displayRabbits, "Rabbits");
 
 		amountOfGrassInSpace.addSequence("Grass in space", new grassInSpace());
-		amountOfAgentsInSpace.addSequence("Agents in space",
-				new agentsInSpace());
+		amountOfAgentsInSpace.addSequence("Agents in space", new agentsInSpace());
 	}
 
 	public String[] getInitParam() {

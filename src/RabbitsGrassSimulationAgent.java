@@ -1,6 +1,4 @@
 import java.awt.Color;
-import java.awt.Image;
-import java.awt.Toolkit;
 
 import uchicago.src.sim.gui.Drawable;
 import uchicago.src.sim.gui.SimGraphics;
@@ -37,9 +35,7 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 	}
 
 	public void draw(SimGraphics G) {
-
 		G.drawFastCircle(Color.PINK);
-
 	}
 
 	public int getX() {
@@ -73,7 +69,7 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 
 	
 	public void report() {
-		System.out.println(getID() + " at " + x + ", " + y + " has "
+		System.out.println(getID() + " at (" + x + "," + y + ") has "
 				+ getEnergy() + " energy");
 	}
 
@@ -106,7 +102,7 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 			count_move_tries++;
 			
 			if(count_move_tries == 4){
-				System.out.println("Rabbit "+getID()+" is blocked in "+x+","+y+"");
+				System.out.println("Rabbit "+getID()+" is blocked in ("+x+","+y+")");
 			}
 			
 			}while(!tryMove(newX, newY) && count_move_tries < 4);
