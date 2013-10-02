@@ -30,6 +30,7 @@ public class RabbitsGrassSimulationSpace {
 
 			// Get the value of the object at those coordinates
 			int currentValue = getGrassAt(x, y);
+			
 			// Replace the Integer object with another one with the new value
 			GrassSpace.putObjectAt(x, y, new Integer(currentValue + 1));
 		}

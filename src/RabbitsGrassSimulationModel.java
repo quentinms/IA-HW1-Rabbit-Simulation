@@ -35,17 +35,15 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 	private DisplaySurface displaySurf;
 
-	private OpenSequenceGraph amountOfGrassInSpace;
-
-	private OpenSequenceGraph amountOfAgentsInSpace;
+	private OpenSequenceGraph amountOfGrassAndAgentsInSpace;
 
 	private ArrayList agentList;
 
 	// Default Values
 	private static final int NUMAGENTS = 1;
-	private static final int WORLDXSIZE = 10;
-	private static final int WORLDYSIZE = 10;
-	private static final int GRASSGROWTRATE = 10;
+	private static final int WORLDXSIZE = 20;
+	private static final int WORLDYSIZE = 20;
+	private static final int GRASSGROWTRATE = 30;
 	private static final int GRASS_ENERGY = 1;
 	private static final int INITIAL_ENERGY = 10;
 	private static final int BIRTH_TRESHOLD = 15;
@@ -147,27 +145,19 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		}
 		displaySurf = null;
 
-		if (amountOfGrassInSpace != null) {
-			amountOfGrassInSpace.dispose();
+		if (amountOfGrassAndAgentsInSpace != null) {
+			amountOfGrassAndAgentsInSpace.dispose();
 		}
-		amountOfGrassInSpace = null;
-
-		if (amountOfAgentsInSpace != null) {
-			amountOfAgentsInSpace.dispose();
-		}
-		amountOfAgentsInSpace = null;
+		amountOfGrassAndAgentsInSpace = null;
 
 		// Create displays
 		displaySurf = new DisplaySurface(this, "Carry Drop Model Window 1");
-		amountOfGrassInSpace = new OpenSequenceGraph(
-				"Amount of grass in space", this);
-		amountOfAgentsInSpace = new OpenSequenceGraph(
-				"Amount of rabbits in space", this);
+		amountOfGrassAndAgentsInSpace = new OpenSequenceGraph(
+				"Amount of grass and agents in space", this);
 
 		// Register displays
 		registerDisplaySurface("Carry Drop Model Window 1", displaySurf);
-		this.registerMediaProducer("PlotGrass", amountOfGrassInSpace);
-		this.registerMediaProducer("PlotAgents", amountOfAgentsInSpace);
+		this.registerMediaProducer("PlotGrass", amountOfGrassAndAgentsInSpace);
 
 	}
 
@@ -177,8 +167,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		buildDisplay();
 
 		displaySurf.display();
-		amountOfGrassInSpace.display();
-		amountOfAgentsInSpace.display();
+		amountOfGrassAndAgentsInSpace.display();
 	}
 
 	public void buildModel() {
@@ -270,21 +259,13 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		class RabbitsGrassSimulationUpdateGrassInSpace extends BasicAction {
 			public void execute() {
-				amountOfGrassInSpace.step();
+				amountOfGrassAndAgentsInSpace.step();
 			}
 		}
 
 		schedule.scheduleActionAtInterval(10,
 				new RabbitsGrassSimulationUpdateGrassInSpace());
 
-		class RabbitsGrassSimulationUpdateAgentsInSpace extends BasicAction {
-			public void execute() {
-				amountOfAgentsInSpace.step();
-			}
-		}
-
-		schedule.scheduleActionAtInterval(10,
-				new RabbitsGrassSimulationUpdateAgentsInSpace());
 	}
 
 	public void buildDisplay() {
@@ -308,8 +289,8 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		displaySurf.addDisplayableProbeable(displayGrass, "Grass");
 		displaySurf.addDisplayableProbeable(displayRabbits, "Rabbits");
 
-		amountOfGrassInSpace.addSequence("Grass in space", new grassInSpace());
-		amountOfAgentsInSpace.addSequence("Agents in space", new agentsInSpace());
+		amountOfGrassAndAgentsInSpace.addSequence("Grass in space", new grassInSpace(), new Color(0, 128, 0));
+		amountOfGrassAndAgentsInSpace.addSequence("Agents in space", new agentsInSpace(), Color.red);
 	}
 
 	public String[] getInitParam() {
@@ -328,7 +309,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		descriptors.put("WorldYSize", pdWorldYSize);
 
 		RangePropertyDescriptor pdGrassGrowthRate = new RangePropertyDescriptor(
-				"GrassGrowthRate", 0, 50, 10);
+				"GrassGrowthRate", 0, 100, 25);
 		descriptors.put("GrassGrowthRate", pdGrassGrowthRate);
 
 		RangePropertyDescriptor pdBirthThreshold = new RangePropertyDescriptor(
