@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 import uchicago.src.sim.gui.Drawable;
 import uchicago.src.sim.gui.SimGraphics;
@@ -20,6 +22,8 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 	private static int IDNumber = 0;
 	private int ID;
 	
+	private static Image rabbit = Toolkit.getDefaultToolkit().createImage("rabbit.png");
+	
 	private int grassEnergy; //represents how efficient the rabbit is at digesting grass.
 
 	private RabbitsGrassSimulationSpace rgsSpace;
@@ -35,7 +39,8 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 	}
 
 	public void draw(SimGraphics G) {
-		G.drawFastCircle(Color.PINK);
+		G.drawFastRect(Color.PINK);
+		G.drawImageToFit(rabbit);
 	}
 
 	public int getX() {
